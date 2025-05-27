@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -14,6 +15,7 @@ public class OrderResponse {
     private String memberEmail;
     private OrderStatus status;
     private LocalDateTime orderDate;
-    private Long totalAmount;
+    private long totalAmount;
     private int totalItems;
+    private List<OrderDetailResponse.OrderItemResponse> orderItems;
 } 

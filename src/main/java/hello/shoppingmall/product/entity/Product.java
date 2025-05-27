@@ -30,4 +30,10 @@ public class Product extends BaseTimeEntity {
         this.stockQuantity = stockQuantity;
         this.category = category;
     }
+
+    public void subtractStock(int stockQuantity){
+        if(this.stockQuantity <stockQuantity)
+            throw new RuntimeException("재고가 없습니다.");
+        this.stockQuantity -= stockQuantity;
+    }
 } 

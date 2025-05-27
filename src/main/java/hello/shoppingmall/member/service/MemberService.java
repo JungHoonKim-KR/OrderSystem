@@ -58,6 +58,10 @@ public class MemberService {
         
         return new MemberResponse(member);
     }
+    @Transactional(readOnly = true)
+    public Member findMemberById(Long id){
+        return memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
+    }
 
     @Transactional(readOnly = true)
     public MemberResponse getCurrentMember(String email) {
@@ -66,5 +70,9 @@ public class MemberService {
         
         log.info("Found member: {}", member);
         return new MemberResponse(member);
+    }
+
+    public Member save(Member member){
+        return memberRepository.save(member);
     }
 } 

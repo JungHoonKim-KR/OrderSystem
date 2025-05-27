@@ -1,6 +1,6 @@
 package hello.shoppingmall.event._5_event_with_external_update.event;
 
-import hello.shoppingmall.event._4_event_with_external.external.KakaoTalkMessageApi;
+import hello.shoppingmall.event.external.KakaoTalkMessageApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;

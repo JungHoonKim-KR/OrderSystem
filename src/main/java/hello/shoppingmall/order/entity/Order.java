@@ -36,13 +36,17 @@ public class Order extends BaseTimeEntity {
     private List<OrderItem> orderItems = new ArrayList<>();
     
     private int totalAmount;  // 총 주문금액
+    private int totalItems;  // 반정규화된 필드 추가
 
     @Builder
-    public Order(Member member, String orderNumber, OrderStatus status, LocalDateTime orderDate, int totalAmount) {
+    public Order(Member member, String orderNumber, OrderStatus status, LocalDateTime orderDate, int totalAmount, int totalItems) {
         this.member = member;
         this.orderNumber = orderNumber;
         this.status = status;
         this.orderDate = orderDate;
         this.totalAmount = totalAmount;
+        this.totalItems = totalItems;
     }
+
+
 } 
