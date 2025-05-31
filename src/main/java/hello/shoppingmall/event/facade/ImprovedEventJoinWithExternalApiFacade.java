@@ -1,6 +1,6 @@
 package hello.shoppingmall.event.facade;
 
-import hello.shoppingmall.event.entity.EventWithLock;
+import hello.shoppingmall.event.entity.Event;
 import hello.shoppingmall.event.repository.EventWithLockRepository;
 import hello.shoppingmall.event.external.ExternalEventApi;
 import hello.shoppingmall.event.external.KakaoTalkMessageApi;
@@ -24,7 +24,7 @@ public class ImprovedEventJoinWithExternalApiFacade {
 
     public void joinEvent(Long eventId, Long memberId) {
         // 0. 이벤트 정보 조회 (읽기 전용)
-        EventWithLock event = eventRepository.findById(eventId)
+        Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("이벤트를 찾을 수 없습니다."));
 
         // 1. DB 트랜잭션 먼저 처리

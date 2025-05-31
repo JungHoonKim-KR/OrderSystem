@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +24,15 @@ public class Event {
     private LocalDateTime eventDate;
     private int maxParticipants;
     private int currentParticipants;
+
+    @Version // 낙관전락 버전
+    private Long version;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     @Builder
     public Event(String name, String description, LocalDateTime eventDate, int maxParticipants) {

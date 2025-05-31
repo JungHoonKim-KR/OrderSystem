@@ -1,6 +1,6 @@
 package hello.shoppingmall.event.facade;
 
-import hello.shoppingmall.event.entity.EventWithLockParticipant;
+import hello.shoppingmall.event.entity.EventWithMember;
 import hello.shoppingmall.event.external.ExternalEventApi;
 import hello.shoppingmall.event.external.model.ExternalEventResponse;
 import hello.shoppingmall.event.service.EventExternalUpdateService;
@@ -22,7 +22,7 @@ public class ImprovedEventJoinWithExternalApiUpdateFacade {
 
     public void joinEvent(Long eventId, Long memberId) {
         // 1. 기존 서비스로 이벤트 참가 처리
-        EventWithLockParticipant participant = eventJoinService.joinEventWithTransaction(eventId, memberId);
+        EventWithMember participant = eventJoinService.joinEventWithTransaction(eventId, memberId);
 
         // 2. 외부 API 호출
         ExternalEventResponse response = externalEventApi.registerParticipant(

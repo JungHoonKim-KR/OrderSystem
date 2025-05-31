@@ -1,7 +1,7 @@
 package hello.shoppingmall.event.service;
 
-import hello.shoppingmall.event.entity.EventWithLock;
-import hello.shoppingmall.event.entity.EventWithLockParticipant;
+import hello.shoppingmall.event.entity.Event;
+import hello.shoppingmall.event.entity.EventWithMember;
 import hello.shoppingmall.event.repository.EventWithLockRepository;
 import hello.shoppingmall.event.repository.EventWithLockParticipantRepository;
 import hello.shoppingmall.member.entity.Member;
@@ -23,7 +23,7 @@ public class EventWithLockService {
 
     @Transactional
     public void joinEventOptimistic(Long eventId, Long memberId) {
-        EventWithLock event = eventRepository.findByIdWithOptimisticLock(eventId)
+        Event event = eventRepository.findByIdWithOptimisticLock(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("이벤트를 찾을 수 없습니다."));
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
@@ -31,7 +31,7 @@ public class EventWithLockService {
         event.increaseParticipants();
         eventRepository.saveAndFlush(event);
 
-        EventWithLockParticipant participant = EventWithLockParticipant.builder()
+        EventWithMember participant = EventWithMember.builder()
                 .event(event)
                 .member(member)
                 .build();
@@ -40,7 +40,7 @@ public class EventWithLockService {
 
     @Transactional
     public void joinEventPessimistic(Long eventId, Long memberId) {
-        EventWithLock event = eventRepository.findByIdWithPessimisticLock(eventId)
+        Event event = eventRepository.findByIdWithPessimisticLock(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("이벤트를 찾을 수 없습니다."));
 
         Member member = memberRepository.findById(memberId)
@@ -48,7 +48,7 @@ public class EventWithLockService {
 
         event.increaseParticipants();
 
-        EventWithLockParticipant participant = EventWithLockParticipant.builder()
+        EventWithMember participant = EventWithMember.builder()
                 .event(event)
                 .member(member)
                 .build();
@@ -59,7 +59,7 @@ public class EventWithLockService {
     // TODO: Named Lock 을 위해 아래 주석을 해제해야함
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void joinEventWithNamedLock(Long eventId, Long memberId) {
-        EventWithLock event = eventRepository.findById(eventId)
+        Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("이벤트를 찾을 수 없습니다."));
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
@@ -67,7 +67,7 @@ public class EventWithLockService {
         event.increaseParticipants();
         eventRepository.saveAndFlush(event);
 
-        EventWithLockParticipant participant = EventWithLockParticipant.builder()
+        EventWithMember participant = EventWithMember.builder()
                 .event(event)
                 .member(member)
                 .build();

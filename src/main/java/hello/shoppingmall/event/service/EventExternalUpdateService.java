@@ -1,7 +1,7 @@
 package hello.shoppingmall.event.service;
 
-import hello.shoppingmall.event.entity.EventWithLock;
-import hello.shoppingmall.event.entity.EventWithLockParticipant;
+import hello.shoppingmall.event.entity.Event;
+import hello.shoppingmall.event.entity.EventWithMember;
 import hello.shoppingmall.event.repository.EventWithLockRepository;
 import hello.shoppingmall.event.repository.EventWithLockParticipantRepository;
 import hello.shoppingmall.global.error.exception.EntityNotFoundException;
@@ -21,9 +21,9 @@ public class EventExternalUpdateService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public EventWithLockParticipant joinEventWithTransaction(Long eventId, Long memberId) {
+    public EventWithMember joinEventWithTransaction(Long eventId, Long memberId) {
         // 1. 이벤트와 회원 정보 조회
-        EventWithLock event = eventRepository.findByIdWithOptimisticLock(eventId)
+        Event event = eventRepository.findByIdWithOptimisticLock(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("이벤트를 찾을 수 없습니다."));
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
@@ -33,7 +33,7 @@ public class EventExternalUpdateService {
         eventRepository.save(event);
 
         // 3. 참가자 정보 저장
-        EventWithLockParticipant participant = EventWithLockParticipant.builder()
+        EventWithMember participant = EventWithMember.builder()
                 .event(event)
                 .member(member)
                 .build();
@@ -42,7 +42,7 @@ public class EventExternalUpdateService {
     }
 
     @Transactional
-    public void updateExternalId(EventWithLockParticipant participant, String externalId) {
+    public void updateExternalId(EventWithMember participant, String externalId) {
         participant.updateExternalId(externalId);
         participantRepository.save(participant);
     }

@@ -37,7 +37,6 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderStatsRepository orderStatsRepository;
-    private final MemberService memberService;
     private final ProductService productService;
     public Page<OrderResponse> findOrders(Pageable pageable) {
         return orderRepository.findAll(pageable)
@@ -111,11 +110,8 @@ public class OrderService {
         return statsPage.map(this::toOrderStatisticsResponse);
     }
     @Transactional
-    public void order(List<ProductRequest> requests, Long memberId){
-        Member member = memberService.findMemberById(memberId);
-
+    public void order(List<ProductRequest> requests, Member member){
         List<OrderItem> orderItemList = new ArrayList<>();
-
         int totalQuantity=0;
         int totalAmount =0;
 
@@ -144,6 +140,8 @@ public class OrderService {
             item.addOrder(order);
         }
         orderRepository.save(order);
+
+
     }
 
 

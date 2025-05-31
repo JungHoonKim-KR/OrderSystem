@@ -1,6 +1,6 @@
 package hello.shoppingmall.event.service;
 
-import hello.shoppingmall.event.entity.EventWithLockParticipant;
+import hello.shoppingmall.event.entity.EventWithMember;
 import hello.shoppingmall.event.external.ExternalEventApi;
 import hello.shoppingmall.event.external.model.ExternalEventResponse;
 import hello.shoppingmall.event.repository.EventWithLockParticipantRepository;
@@ -25,14 +25,14 @@ public class ExternalApiUpdateRecoveryService {
 //    @Scheduled(fixedDelay = 300000) // 5분
     public void recoverMissingExternalIds() {
         // 1. external_id가 없는 참가자들 조회
-        List<EventWithLockParticipant> participantsWithoutExternalId = participantRepository.findByExternalIdIsNullAndCreatedAtBefore(
+        List<EventWithMember> participantsWithoutExternalId = participantRepository.findByExternalIdIsNullAndCreatedAtBefore(
                 LocalDateTime.now()
         );
 
         log.info("외부 ID 미할당 참가자 발견: {}건", participantsWithoutExternalId.size());
 
         // 2. 각 참가자별로 외부 시스템 조회 및 업데이트
-        for (EventWithLockParticipant participant : participantsWithoutExternalId) {
+        for (EventWithMember participant : participantsWithoutExternalId) {
             syncExternalId(participant);
         }
     }
@@ -40,7 +40,7 @@ public class ExternalApiUpdateRecoveryService {
     /**
      * 개별 참가자의 외부 ID 동기화
      */
-    public void syncExternalId(EventWithLockParticipant participant) {
+    public void syncExternalId(EventWithMember participant) {
         // 1. 외부 시스템에서 참가자 정보 조회 (트랜잭션 밖에서)
         ExternalEventResponse response = externalEventApi.getParticipantInfo(
                 participant.getEvent().getId(),
