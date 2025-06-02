@@ -59,8 +59,8 @@ public class MemberService {
         return new MemberResponse(member);
     }
     @Transactional(readOnly = true)
-    public Member findMemberById(Long id){
-        return memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
+    public Member findMemberByEmail(String email){
+        return memberRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
     }
 
     @Transactional(readOnly = true)

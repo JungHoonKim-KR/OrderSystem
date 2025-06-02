@@ -2,25 +2,30 @@ package hello.shoppingmall.product.service;
 
 
 import hello.shoppingmall.global.error.exception.EntityNotFoundException;
+import hello.shoppingmall.product.dto.ProductDetailDto;
 import hello.shoppingmall.product.dto.ProductResponse;
 import hello.shoppingmall.product.entity.Product;
 import hello.shoppingmall.product.entity.ProductCategory;
 import hello.shoppingmall.product.respository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class ProductService {
 
     private final ProductRepository productRepository;
-
-    public Product findProductBydId(Long productId){
-        return productRepository.findByIdWithPessimisticLock(productId).orElseThrow(()->new EntityNotFoundException("상품을 찾을 수 없습니다."));
+    public Product findProductBydId(Long productId) {
+        return productRepository.findByIdWithPessimisticLock(productId).orElseThrow(() -> new EntityNotFoundException("상품을 찾을 수 없습니다."));
     }
 
     public Page<ProductResponse> findProductsByCategory(ProductCategory category, Pageable pageable) {
@@ -28,10 +33,17 @@ public class ProductService {
                 .map(this::toProductResponse);
     }
 
+    public List<Product> findRelatedProducts(Long productId, ProductCategory category){
+        Pageable pageable = PageRequest.of(0, 3);
+
+        return productRepository.findRelatedProducts(category, productId, pageable);
+    }
+
     @Transactional
-    public Product save(Product product){
+    public Product save(Product product) {
         return productRepository.save(product);
     }
+
 
     private ProductResponse toProductResponse(Product product) {
         return ProductResponse.builder()
@@ -42,4 +54,5 @@ public class ProductService {
                 .category(product.getCategory())
                 .build();
     }
+
 } 

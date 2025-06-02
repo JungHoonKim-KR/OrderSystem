@@ -15,10 +15,12 @@ import lombok.NoArgsConstructor;
 public class OrderItem extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
+    @Column(unique = true)
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)

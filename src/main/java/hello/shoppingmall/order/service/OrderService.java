@@ -3,6 +3,7 @@ package hello.shoppingmall.order.service;
 import hello.shoppingmall.member.entity.Member;
 import hello.shoppingmall.member.service.MemberService;
 import hello.shoppingmall.order.dto.OrderDetailResponse;
+import hello.shoppingmall.order.dto.OrderRequest;
 import hello.shoppingmall.order.dto.OrderResponse;
 import hello.shoppingmall.order.dto.OrderStatisticsResponse;
 import hello.shoppingmall.order.entity.Order;
@@ -110,14 +111,17 @@ public class OrderService {
         return statsPage.map(this::toOrderStatisticsResponse);
     }
     @Transactional
-    public void order(List<ProductRequest> requests, Member member){
+    public void order(OrderRequest orderRequest){
         List<OrderItem> orderItemList = new ArrayList<>();
         int totalQuantity=0;
         int totalAmount =0;
 
-        for(ProductRequest productRequest: requests){
+        for(ProductRequest productRequest: orderRequest.getProductList()){
             Product product = productService.findProductBydId(productRequest.getProductId());
+
+            // 수량 체크
             product.subtractStock(productRequest.getQuantity());
+
             orderItemList.add(OrderItem.builder()
                     .product(product)
                     .quantity(productRequest.getQuantity())
@@ -128,7 +132,7 @@ public class OrderService {
         }
 
         Order order = Order.builder()
-                .member(member)
+                .member(orderRequest.getMember())
                 .orderNumber(UUID.randomUUID().toString())
                 .orderDate(LocalDateTime.now())
                 .status(OrderStatus.PROCESSING)
@@ -136,6 +140,7 @@ public class OrderService {
                 .totalItems(totalQuantity)
                 .build();
 
+        // order와 item의 연관관계를 위해
         for (OrderItem item : orderItemList){
             item.addOrder(order);
         }

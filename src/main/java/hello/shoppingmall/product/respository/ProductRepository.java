@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -21,4 +22,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT p FROM Product p where p.id =:id ")
     Optional<Product> findByIdWithPessimisticLock(Long id);
+
+    Optional<Product> findByIdAndName(Long id, String name);
+
+    @Query("select p FROM Product p WHERE p.category = :category AND p.id > :id order by p.id ASC ")
+    List<Product> findRelatedProducts(
+            @Param("category") ProductCategory category,
+            @Param("id") Long id,
+            Pageable pageable
+    );
+
 } 
